@@ -70,13 +70,21 @@
                                    RelativePanel.RightOf="ChannelHeader"
                                    RelativePanel.AlignBottomWith="ChannelHeader"
                                    />
-                        <TextBlock x:Name="RssiHeader"
-                                   Text="Rssi="
+                        <TextBlock x:Name="Rssi1Header"
+                                   Text="Rssi1="
                                    RelativePanel.Below="ChannelHeader"
                                    />
-                        <TextBlock Text="{x:Bind AvgRssi, Mode=OneWay}"
-                                   RelativePanel.RightOf="RssiHeader"
-                                   RelativePanel.AlignBottomWith="RssiHeader"
+                        <TextBlock Text="{x:Bind AvgRssi1, Mode=OneWay}"
+                                   RelativePanel.RightOf="Rssi1Header"
+                                   RelativePanel.AlignBottomWith="Rssi1Header"
+                                   />
+                        <TextBlock x:Name="Rssi2Header"
+                                   Text="Rssi2="
+                                   RelativePanel.Below="Rssi1Header"
+                                   />
+                        <TextBlock Text="{x:Bind AvgRssi2, Mode=OneWay}"
+                                   RelativePanel.RightOf="Rssi2Header"
+                                   RelativePanel.AlignBottomWith="Rssi2Header"
                                    />
                     </RelativePanel>
                 </DataTemplate>

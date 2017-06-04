@@ -15,16 +15,16 @@ namespace WiFiCircles
         private double[] avgLevels = new double[2];
         private double avgDiff = 0.0;
         private bool needRecalc = true;
-        private LinkedList<double> diffs;
-        private LinkedList<double> levels;
+        private LinkedList<double>[] levels;
 
         public LevelCalculator(string ssid, string mac)
         {
             this.ssid = ssid;
             this.mac = mac;
             avgCount = 15;
-            diffs = new LinkedList<double>();
-            levels = new LinkedList<double>();
+            levels = new LinkedList<double>[2];
+            levels[0] = new LinkedList<double>();
+            levels[1] = new LinkedList<double>();
         }
 
         public bool HandleInfo(BeaconInfoData data)
@@ -32,18 +32,21 @@ namespace WiFiCircles
             //data.print();
             if (data.ssid == ssid && data.mac == mac)
             {
-                levels.AddLast(data.level);
-                diffs.AddLast(data.diff);
-                while (levels.Count > avgCount)
+                int idx = data.rcvIdx;
+                if (0 <= idx && idx <= 1)
                 {
-                    levels.RemoveFirst();
+                    levels[idx].AddLast(data.level);
+                    while (levels[idx].Count > avgCount)
+                    {
+                        levels[idx].RemoveFirst();
+                    }
+                    needRecalc = true;
+                    print();
                 }
-                while (diffs.Count > avgCount)
+                else
                 {
-                    diffs.RemoveFirst();
+                    System.Diagnostics.Debug.WriteLine("LevelCalculator.HandleInfo() Bad rcvIdx: " + data.rcvIdx);
                 }
-                needRecalc = true;
-                print();
             }
             else
             {
@@ -63,12 +66,33 @@ namespace WiFiCircles
         {
             if (needRecalc)
             {
-                avgDiff = diffs.Average();
+                for (int idx = 0; idx < 2; idx++)
+                {
+                    double sum = 0.0;
+                    foreach (double x in levels[idx])
+                    {
+                        sum += x;
+                    }
+                    int count = levels[idx].Count;
+                    if (count != 0)
+                    {
+                        sum /= count;
+                    }
+                    avgLevels[idx] = sum;
+                }
+                //copy-pasted from beacon radar
+                //tfDiff = Math.Pow(10.0, ((double)(ch1rssi - ch0rssi) * 0.1 + 4) * Services.SettingsServices.SettingsService.Instance.PowerAmplifier);
+                //
+                //avgDiff = Math.Abs(avgLevels[0] - avgLevels[1]);
+                //avgDiff = 100 - 4*(avgLevels[0] - avgLevels[1]);
+                avgDiff = Math.Pow(10.0, ((double)(avgLevels[1] - avgLevels[0]) * 0.1 + 2.5) * 1);
+                //avgDiff = 2000 / 100 * avgDiff;
+
                 needRecalc = false;
             }
             return avgDiff;
         }
 
-        public double GetCurrent() => levels.Any() ? levels.Last() : -100;
+        public double GetCurrent() => levels[0].Any() ? levels[0].Last() : -100;
     }
 }

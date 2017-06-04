@@ -29,7 +29,10 @@ namespace WiFiCircles.Data
                 Channels.Add(chan);
                 result = true;
             }
-            chan.AddRssi(info.level, info.diff);
+            if (info.rcvIdx == 0)
+                chan.AddRssi1(info.level);
+            else if (info.rcvIdx == 1)
+                chan.AddRssi2(info.level);
             return result;
         }
     }

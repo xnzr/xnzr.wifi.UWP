@@ -24,6 +24,10 @@ namespace WiFiCircles
         #endregion IDisposable implementation
 
         #region Public methods
+        public Task SwitchToOldProtocolAsync() => _device.WriteAsync("$2122239");
+
+        public Task SwitchToNewProtocolAsync() => _device.WriteAsync("$5260764");
+
         public void ScanNetworks()
         {
             Stop();

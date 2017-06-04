@@ -8,25 +8,25 @@ namespace WiFiCircles
 {
     public class BeaconInfoData
     {
+        public int rcvIdx;
         public byte wifiChan;
         public string mac;
         public Int64 time;
-        public double diff;
         public double level;
         public string ssid;
 
         public override string ToString()
         {
             return
+                "ant " + rcvIdx + "  " +
                 "chan " + wifiChan + "  " +
                 "mac " + mac + "  " +
                 "time " + time + "  " +
-                "diff " + diff + "  " +
                 "lev " + level + "  " +
                 "ssid " + ssid;
         }
 
-        static int MIN_COUNT = 5;
+        static int MIN_COUNT = 6;
         public static BeaconInfoData FromString(string str)
         {
             //Console.WriteLine("parseString(" + str + ")");
@@ -43,12 +43,13 @@ namespace WiFiCircles
             BeaconInfoData info = new BeaconInfoData();
             try
             {
+                info.rcvIdx = Convert.ToInt32(subStrings[0], 10) - 1;
                 info.wifiChan = Convert.ToByte(subStrings[1], 10);
-                info.mac = subStrings[0];
-                info.diff = Convert.ToDouble(subStrings[2]);
-                info.level = Convert.ToDouble(subStrings[3]);
-                info.ssid = subStrings[4];
-                for (int i = 5; i < subStrings.Length; i++)
+                info.mac = subStrings[2];
+                info.time = Convert.ToInt64(subStrings[3], 16);
+                info.level = (double)Convert.ToInt32(subStrings[4], 10);
+                info.ssid = subStrings[5];
+                for (int i = 6; i < subStrings.Length; i++)
                 {
                     info.ssid += " ";
                     info.ssid += subStrings[i];

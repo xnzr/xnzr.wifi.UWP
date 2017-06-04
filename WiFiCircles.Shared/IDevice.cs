@@ -12,6 +12,7 @@ namespace WiFiCircles
         bool HasData { get; }
         Task<string> ReadLineAsync(CancellationToken token);
         Task WriteAsync(byte data);
+        Task WriteAsync(string data);
         void Reset();
     }
 }

@@ -60,6 +60,7 @@ namespace WiFiCircles.ViewModel
                 {
                     await Dispatcher?.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => SelectSsid(string.Empty, string.Empty));
                     _device = new WiFiScannerDevice(new Devices.UWPDevice(device));
+                    await _device.SwitchToOldProtocolAsync();
                     _device.DataReceived += _device_DataReceived;
                     _device.ScanNetworks();
                 }

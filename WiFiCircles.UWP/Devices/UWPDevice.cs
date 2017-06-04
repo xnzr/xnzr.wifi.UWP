@@ -88,6 +88,12 @@ namespace WiFiCircles.Devices
             await _dataWriter.StoreAsync();
         }
 
+        async Task IDevice.WriteAsync(string data)
+        {
+            _dataWriter.WriteString(data);
+            await _dataWriter.StoreAsync();
+        }
+
         void IDevice.Reset()
         {
             dataString = string.Empty;
